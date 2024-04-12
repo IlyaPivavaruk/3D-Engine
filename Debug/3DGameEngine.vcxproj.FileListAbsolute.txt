@@ -1,0 +1,2 @@
+C:\Users\ilya\source\repos\3DGameEngine\Debug\3DGameEngine.exe
+C:\Users\ilya\Documents\GitHub\3DGameEngine\Debug\3DGameEngine.exe
