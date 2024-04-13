@@ -1,6 +1,8 @@
 // 3DGameEngine.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include "olcConsoleGameEngine.h"
+#include <fstream>
+#include <strstream>
 using namespace std;
 
 // vector is made up of 3 points
@@ -12,11 +14,48 @@ struct vec3d {
 struct triangle {
     vec3d p[3];
 
+    wchar_t sym;
+    short col;
 };
 
 //Mesh is a visual 3D object which is made out of triangles
 struct mesh {
     vector<triangle> tris;
+    bool LoadFromObjectFile(string sFileName) {
+
+        ifstream f(sFileName);
+        if (!f.is_open())
+            return false;
+
+        //Local cache of verts
+        vector<vec3d> verts;
+
+        while (!f.eof()) {
+            char line[128];
+            f.getline(line, 128);
+
+            strstream s;
+            s << line;
+
+            char junk;
+
+            if (line[0] == 'v') {
+                vec3d v;
+                s >> junk >> v.x >> v.y >> v.z;
+                verts.push_back(v);
+            }
+
+            if (line[0] == 'f') {
+                int f[3];
+                s >> junk >> f[0] >> f[1] >> f[2];
+                tris.push_back({verts[f[0] -1], verts[f[1]-1], verts[f[2]-1]});
+            }
+
+
+        }
+
+        return true;
+    }
 };
 
 // Row | Column
@@ -60,6 +99,9 @@ public:
             {1.0f, 0.0f, 1.0f,  0.0f,0.0f,0.0f,  1.0f,0.0f,0.0f},
 
         };
+
+        //meshCube.LoadFromObjectFile();
+
         //projection matrix
         float fNear = 0.1f;
         float fFar = 1000.0f;
@@ -148,9 +190,28 @@ public:
                 normal.y * (triTranslated.p[0].y - vCamera.y)+ 
                 normal.z * (triTranslated.p[0].z - vCamera.z) < 0.0f)
             {
+
+                // Illumination
+                vec3d light_direction = { 0.0f, 0.0f, -1.0f };
+                //normalize the light direction vector
+                float l = sqrtf(light_direction.x * light_direction.x +
+                                light_direction.y * light_direction.y +
+                                light_direction.z * light_direction.z);
+                light_direction.x /= l; light_direction.y /= l; light_direction.z /= l;
+
+                //calculate the dot product between the normal of triangle's surface and the light direction
+                float dp = normal.x * light_direction.x + normal.y * light_direction.y + normal.z * light_direction.z;
+
+                CHAR_INFO c = GetColor(dp);
+                triTranslated.col = c.Attributes;
+                triTranslated.sym = c.Char.UnicodeChar;
+
                 MultiplyMatrixVector(triTranslated.p[0], triProjected.p[0], matProj);
                 MultiplyMatrixVector(triTranslated.p[1], triProjected.p[1], matProj);
                 MultiplyMatrixVector(triTranslated.p[2], triProjected.p[2], matProj);
+
+                triProjected.col = triTranslated.col;
+                triProjected.sym = triTranslated.sym;
 
                 //Scale into view
 
@@ -164,6 +225,11 @@ public:
                 triProjected.p[1].y *= 0.5f * (float)ScreenHeight();
                 triProjected.p[2].x *= 0.5f * (float)ScreenWidth();
                 triProjected.p[2].y *= 0.5f * (float)ScreenHeight();
+
+                FillTriangle(triProjected.p[0].x, triProjected.p[0].y,
+                    triProjected.p[1].x, triProjected.p[1].y,
+                    triProjected.p[2].x, triProjected.p[2].y,
+                    triProjected.sym, triProjected.col);
 
                 DrawTriangle(triProjected.p[0].x, triProjected.p[0].y,
                     triProjected.p[1].x, triProjected.p[1].y,
@@ -196,6 +262,40 @@ private:
         if (w != 0.0f) {
             o.x /= w; o.y /= w; o.z /= w;
         }
+    }
+
+
+    CHAR_INFO GetColor(float lum) {
+
+        short bg_col, fg_col;
+        wchar_t sym;
+        int pixel_bw = (int)(13.0f * lum);
+        switch (pixel_bw) {
+
+            case 0: bg_col = BG_BLACK; fg_col = FG_BLACK; sym = PIXEL_SOLID; break;
+
+            case 2: bg_col = BG_BLACK; fg_col = FG_DARK_GREY; sym = PIXEL_QUARTER; break;
+            case 3: bg_col = BG_BLACK; fg_col = FG_DARK_GREY; sym = PIXEL_HALF; break;
+            case 4: bg_col = BG_BLACK; fg_col = FG_DARK_GREY; sym = PIXEL_THREEQUARTERS; break;
+            case 1: bg_col = BG_BLACK; fg_col = FG_DARK_GREY; sym = PIXEL_SOLID; break;
+
+            case 5: bg_col = BG_DARK_GREY; fg_col = FG_GREY; sym = PIXEL_QUARTER; break;
+            case 6: bg_col = BG_DARK_GREY; fg_col = FG_GREY; sym = PIXEL_HALF; break;
+            case 7: bg_col = BG_DARK_GREY; fg_col = FG_GREY; sym = PIXEL_THREEQUARTERS; break;
+            case 8: bg_col = BG_DARK_GREY; fg_col = FG_GREY; sym = PIXEL_SOLID; break;
+
+            case 9:  bg_col = BG_GREY; fg_col = FG_WHITE; sym = PIXEL_QUARTER; break;
+            case 10: bg_col = BG_GREY; fg_col = FG_WHITE; sym = PIXEL_HALF; break;
+            case 11: bg_col = BG_GREY; fg_col = FG_WHITE; sym = PIXEL_THREEQUARTERS; break;
+            case 12: bg_col = BG_GREY; fg_col = FG_WHITE; sym = PIXEL_SOLID; break;
+            default:
+                bg_col = BG_BLACK; fg_col = FG_BLACK; sym = PIXEL_SOLID;
+        }
+
+        CHAR_INFO c;
+        c.Attributes = bg_col | fg_col;
+        c.Char.UnicodeChar = sym;
+        return c;
     }
 
 

@@ -1,11 +1,17 @@
 ﻿  3DGameEngine.cpp
 C:\Users\ilya\Documents\GitHub\3D-Engine\olcConsoleGameEngine.h(784,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(98,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(99,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(170,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(170,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(169,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(169,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(168,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(168,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(100,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(101,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(191,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(191,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(190,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(190,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(189,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(189,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(196,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(196,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(195,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(195,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(194,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\ilya\Documents\GitHub\3D-Engine\3DGameEngine.cpp(194,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   3DGameEngine.vcxproj -> C:\Users\ilya\Documents\GitHub\3D-Engine\x64\Debug\3DGameEngine.exe
