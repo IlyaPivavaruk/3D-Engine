@@ -3,6 +3,7 @@
 #include "olcConsoleGameEngine.h"
 #include <fstream>
 #include <strstream>
+#include <algorithm>
 using namespace std;
 
 // vector is made up of 3 points
@@ -39,7 +40,7 @@ struct mesh {
 
             char junk;
 
-            if (line[0] == 'v') {
+            if (line[0] == 'v' && line[1] == ' ') {
                 vec3d v;
                 s >> junk >> v.x >> v.y >> v.z;
                 verts.push_back(v);
@@ -78,7 +79,7 @@ public:
 
     bool OnUserCreate() override {
 
-        meshCube.tris = {
+        /*meshCube.tris = {
             //SOUTH (x,y,z)
             {0.0f, 0.0f, 0.0f,  0.0f,1.0f,0.0f,  1.0f,1.0f,0.0f},
             {0.0f, 0.0f, 0.0f,  1.0f,1.0f,0.0f,  1.0f,0.0f,0.0f},
@@ -98,9 +99,9 @@ public:
             {1.0f, 0.0f, 1.0f,  0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f},
             {1.0f, 0.0f, 1.0f,  0.0f,0.0f,0.0f,  1.0f,0.0f,0.0f},
 
-        };
+        };*/
 
-        //meshCube.LoadFromObjectFile();
+        meshCube.LoadFromObjectFile("TestObj.obj");
 
         //projection matrix
         float fNear = 0.1f;
@@ -143,6 +144,10 @@ public:
         matRotX.m[2][2] = cosf(fTheta * 0.5f);
         matRotX.m[3][3] = 1;
 
+
+        vector<triangle> vecTrianglesToRaster; //vector for storing the triangles we want to draw
+
+
         // Draw Triangles
 
         for (auto tri : meshCube.tris) {
@@ -160,9 +165,9 @@ public:
 
             //Offset into the screen
             triTranslated = triRotatedZX;
-            triTranslated.p[0].z = triRotatedZX.p[0].z + 3.0f;
-            triTranslated.p[1].z = triRotatedZX.p[1].z + 3.0f;
-            triTranslated.p[2].z = triRotatedZX.p[2].z + 3.0f;
+            triTranslated.p[0].z = triRotatedZX.p[0].z + 10.0f;
+            triTranslated.p[1].z = triRotatedZX.p[1].z + 10.0f;
+            triTranslated.p[2].z = triRotatedZX.p[2].z + 10.0f;
 
 
             vec3d normal, line1, line2;
@@ -226,7 +231,12 @@ public:
                 triProjected.p[2].x *= 0.5f * (float)ScreenWidth();
                 triProjected.p[2].y *= 0.5f * (float)ScreenHeight();
 
-                FillTriangle(triProjected.p[0].x, triProjected.p[0].y,
+                //Store triangle for sorting
+                vecTrianglesToRaster.push_back(triProjected);
+
+
+                //Rasterize triangle
+                /*FillTriangle(triProjected.p[0].x, triProjected.p[0].y,
                     triProjected.p[1].x, triProjected.p[1].y,
                     triProjected.p[2].x, triProjected.p[2].y,
                     triProjected.sym, triProjected.col);
@@ -234,9 +244,23 @@ public:
                 DrawTriangle(triProjected.p[0].x, triProjected.p[0].y,
                     triProjected.p[1].x, triProjected.p[1].y,
                     triProjected.p[2].x, triProjected.p[2].y,
-                    PIXEL_SOLID, FG_GREEN);
+                    PIXEL_SOLID, FG_GREEN);*/
             }
 
+        }
+
+        // sort triangles form back to front
+        sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(), [](triangle& t1, triangle& t2) {
+            float z1 = (t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
+            float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
+            return z1 > z2;
+        });
+
+        for(auto &triProjected : vecTrianglesToRaster) {
+            FillTriangle(triProjected.p[0].x, triProjected.p[0].y,
+                triProjected.p[1].x, triProjected.p[1].y,
+                triProjected.p[2].x, triProjected.p[2].y,
+                triProjected.sym, triProjected.col);
         }
 
         return true;
